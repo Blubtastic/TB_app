@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity} from 'react-native';
 import { Content, Icon, H1, H2, H3, Item, Input, Form, Button } from 'native-base';
 
+
 import CustomHeader from '../CustomHeader';
 
 
@@ -90,7 +91,6 @@ export default class Kortspill extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-
         {/* HEADER/NAV */}
         <View style={styles.header}>
           <H1>Poengtavle</H1>
@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
   content: {
     display: 'flex',
     justifyContent: 'flex-start',
+
     alignItems: 'center',
     flex: 1,
   },
@@ -232,5 +233,6 @@ const styles = StyleSheet.create({
   },
   dropdownContent: {
     width: '60%',
+
   },
 });
