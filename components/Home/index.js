@@ -27,10 +27,10 @@ export default class Calendar extends React.Component {
 
         <View style={styles.content}>
 
-          <ImageBackground  style={styles.largeImg} source={ require('../../images/calendar.jpg') }>
-            <TouchableHighlight style={styles.largeLink} onPress={() => navigate('Calendar') }>
+          <ImageBackground  style={styles.largeImg} source={ require('../../images/kortspill.jpg') }>
+            <TouchableHighlight style={styles.largeLink} onPress={() => navigate('Kortspill') }>
               <View style={styles.textBar}>
-              <Text style={{color: '#fff'}}>Eventkalender</Text>
+                <Text style={{color: '#fff'}}>Kortspill</Text>
               </View>
             </TouchableHighlight>
           </ImageBackground>
@@ -53,17 +53,17 @@ export default class Calendar extends React.Component {
           </View>
 
           <View style={styles.row}>
+            <ImageBackground  style={styles.img} source={ require('../../images/vorskalender.png') }>
+              <TouchableHighlight style={styles.link} onPress={() => navigate('Calendar') }>
+                <View style={styles.textBar}>
+                  <Text style={{color: '#fff'}}>Vorskalender</Text>
+                </View>
+              </TouchableHighlight>
+            </ImageBackground>
             <ImageBackground  style={styles.img} source={ require('../../images/turneringer.jpg') }>
               <TouchableHighlight style={styles.link} onPress={() => navigate('Turneringer') }>
                 <View style={styles.textBar}>
                   <Text style={{color: '#fff'}}>Turneringer</Text>
-                </View>
-              </TouchableHighlight>
-            </ImageBackground>
-            <ImageBackground  style={styles.img} source={ require('../../images/kortspill.jpg') }>
-              <TouchableHighlight style={styles.link} onPress={() => navigate('Kortspill') }>
-                <View style={styles.textBar}>
-                  <Text style={{color: '#fff'}}>Kortspill</Text>
                 </View>
               </TouchableHighlight>
             </ImageBackground>

@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal} from 'react-native';
 import { Content, Icon, H1, H2, H3, Item, Input, Form, Button } from 'native-base';
 
 
 import CustomHeader from '../CustomHeader';
+import CloseButton from '../SmallComponents/CloseButton'
 
 
 export default class Kortspill extends React.Component {
@@ -11,6 +12,7 @@ export default class Kortspill extends React.Component {
     super(props);
     this.state = {
       players: [],
+      modalVisible: false,
     }
   }
   static navigationOptions = {
@@ -24,170 +26,146 @@ export default class Kortspill extends React.Component {
     //For testint. Later will set state from local storage.
     this.setState({players:
       [
-        {key: '0', name: 'Joakim', scores: [5, 10], sum: 0, nextScore: 0},
-        {key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: 0},
-        {key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: 0},
-      ]
-    }, () => {
+        {key: '0', name: 'Joakim', scores: [5, 10], sum: 0, nextScore: null},
+        {key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: null},
+        {key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: null},
+      ],
+    }, () => this.calculateSum())
 
-      var players = this.state.players;
-      for (i = 0; i < players.length; i++) {
-        var totalScore = 0;
-
-        for (score = 0; score < players[i].scores.length; score++) {
-          totalScore += this.state.players[i].scores[score]
-        }
-
-        players[i].sum = totalScore;
-        this.setState({players: players});
+  }
+  //Calculates the sum for each player in state.
+  calculateSum(){
+    var players = this.state.players;
+    for (i = 0; i < players.length; i++) {
+      var totalScore = 0;
+      for (score = 0; score < players[i].scores.length; score++) {
+        totalScore += this.state.players[i].scores[score]
       }
-
-    })
-
-  }
-
-  addScores(players){
-    //Copy array because React sucks
-    newArray = this.state.players;
-    //Update score list with new values
-    for (x = 0; x < newArray.length; x++){
-      newArray[x].scores.push(newArray[x].nextScore)
+      players[i].sum = totalScore;
+      this.setState({players: players});
     }
-    this.setState({players: newArray}, () => { console.log("new array: ", this.state.players) })
   }
 
+  //Add new score to each player
+  addScores(players){
+    //Hide modal
+    this.setState({ modalVisible: false })
+    //1: Copy array because React sucks
+    let newArray = this.state.players;
+    //2: Update with new values
+    for (x = 0; x < newArray.length; x++){
+      if(newArray[x].nextScore != null) {
+        newArray[x].scores.push(newArray[x].nextScore)
+        newArray[x].nextScore = null;
+      }
+    }
+    //3: Update state
+    this.setState({players: newArray}, () => { console.log("new array: ", this.state.players) })
+    //Update sum field for each player
+    this.calculateSum();
+  }
+
+  //Add a new player
   addPlayer(name){
     newPlayers = this.state.players;
     newPlayer = {};
-    newPlayer.key = newPlayers.length + 1;
+    newPlayer.key = String(newPlayers.length + 1);
     newPlayer.name = name;
     newPlayer.scores = [];
     newPlayer.sum = 0;
-    newPlayer.nextScore = 0;
+    newPlayer.nextScore = null;
 
     newPlayers.push(newPlayer);
-    console.log(newplayers);
+    console.log(newPlayers);
     this.setState({players: newPlayers});
-  }
-
-  //Renders the dropdown content
-  renderList(){
-    label = "Score";
-    return(
-      <FlatList
-        data={this.state.players}
-        extraData={this.state}
-        keyExtractor={(item, index) => item.key}
-        renderItem={({item}) =>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text>{item.name}</Text>
-          {/* Ikke garantert at dette funker ettersom det setter state uten setState.*/}
-          <Input placeholder={label} keyboardType={'numeric'} onChangeText={ (text) => item.nextScore = parseInt(text) } />
-        </View>}
-      />
-    )
   }
 
   render() {
     return (
       <View style={{flex: 1}}>
-        {/* HEADER/NAV */}
+        {/* HEADER/NAV ---------------------------------------------------- */}
         <View style={styles.header}>
           <H1>Poengtavle</H1>
-          <Button style={styles.closeBtn} onPress={() => this.props.navigation.goBack(null) } >
-            <Icon style={{fontSize: 50, color: '#111'}}  name="ios-close" />
-          </Button>
+          <CloseButton action={() => this.props.navigation.goBack(null)} />
         </View>
 
-        {/* CONTENT */}
+        {/* CONTENT ------------------------------------------------------- */}
         <View style={styles.content}>
-
-          {/* ADD SCORES */}
-
+          {/* INPUT FIELDS FOR SCORES ---------- */}
           <View style={{alignSelf: 'stretch', alignItems: 'center'}}>
-            <View style={{alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#efefef'}}>
-              <H1 style={{fontSize: 20, justifyContent: 'center'}}>Legg til poeng - runde 1</H1>
-            </View>
-            <View style={styles.dropdownContent}>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.modalVisible}
+              onRequestClose={() => {
+                this.setState({ modalVisible: false })
+              }}>
+              <TouchableHighlight style={styles.modalBackground} onPress={ () => this.setState({ modalVisible: false }) }>
+                <TouchableWithoutFeedback>
+                  <View style={styles.modalContent}>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                      <H1>Legg til poeng</H1>
+                      <View style={{position: 'absolute', top: -20, right: -20}}>
+                        <CloseButton action={() => this.setState({ modalVisible: false }) } />
+                      </View>
+                    </View>
 
-            {this.renderList()}
-
-
-              {/*
-              <List>
-                <FlatList data={this.state.players}
-                  renderItem={({player}) => (
-                  <ListItem style={{height: 60}} title={'player.name'}>
-                    <Item>
-                      <Input
-                        keyboardType={'numeric'}
-                        onChangeText={(text) => player.nextScore = parseInt(text)}
-                        placeholder="Poeng"
-                      />
-                    </Item>
-                  </ListItem>
-                  )}
-                />
-              </List>
-              */}
-
-
-              <Button full style={{backgroundColor: '#F9A423', marginTop: 10, marginBottom: 10}} onPress={() => this.addScores()}>
-                <Text >Legg til</Text>
-              </Button>
-            </View>
+                    <FlatList
+                      data={this.state.players}
+                      extraData={this.state}
+                      keyExtractor={(item, index) => item.key}
+                      renderItem={({item}) =>
+                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={{flex: 1}}>{item.name}</Text>
+                        {/* Ikke garantert at dette funker ettersom det setter state uten setState.*/}
+                        <Input style={{flex: 3}} placeholder={"Score"} keyboardType={'numeric'} onChangeText={ (text) => item.nextScore = parseInt(text) } />
+                      </View>}
+                    />
+                    <Button full style={{backgroundColor: '#F9A423', height: 60}} onPress={() => this.addScores()}>
+                      <Text >Legg til</Text>
+                    </Button>
+                  </View>
+                </TouchableWithoutFeedback>
+              </TouchableHighlight>
+            </Modal>
           </View>
 
-
-          {/* SHOW SCORES / NEW PLAYER */}
-          <View style={{alignSelf: 'stretch'}}>
-          {/*
-          <List>
-            <FlatList style={styles.playersList}
-              data={this.state.players}
-              renderItem={({ player }) => (
-                <ListItem style={{height: 70}} title={player.name} subtitle={player.sum + ' poeng'}>
-                  <FlatList data={player.scores}
-                    renderItem={({ score }) => (
-                      <ListItem title={score + 'p'}/>
-                    )}
-                  />
-                </ListItem>
-              )}
-            />
-          </List>
-          */}
-          {/* A list containing a list, showing each player and their scores. */}
-          <FlatList
-            data={this.state.players}
-            extraData={this.state}
-            keyExtractor={(item, index) => item.key}
-            renderItem={({item}) =>
-            <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>
-
-              <View style={{marginRight: 10, width: 80}}>
-                <H3 style={{}}>{item.name}</H3>
-                <Text style={{color: '#F9A423'}}>{item.sum + ' poeng'}</Text>
-              </View>
-
+          {/* SHOW ALL PLAYERS (+ scores) ----------*/}
+          <View style={{alignSelf: 'stretch', flex: 1, justifyContent: 'space-between'}}>
+            <View style={{maxHeight: '90%'}}>
+              {/* A list containing a list, showing each player and their scores. */}
               <FlatList
-                data={item.scores}
+                data={this.state.players}
                 extraData={this.state}
-                horizontal={true}
                 keyExtractor={(item, index) => item.key}
                 renderItem={({item}) =>
-                  <Text style={{paddingLeft: 6, paddingRight: 6}}>{item}</Text>
-                }
+                <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>
+                  <View style={{marginRight: 10, width: 80}}>
+                    <H3>{item.name}</H3>
+                    <Text style={{color: '#F9A423'}}>{item.sum + ' poeng'}</Text>
+                  </View>
+                  <FlatList
+                    data={item.scores}
+                    extraData={this.state}
+                    horizontal={true}
+                    keyExtractor={(item, index) => item.key}
+                    renderItem={({item}) =>
+                      <Text style={{paddingLeft: 6, paddingRight: 6}}>{item}</Text>
+                    }
+                  />
+                </View>}
               />
+              {/* Nye poeng  */}
+              <Button full onPress={() => this.setState({ modalVisible: true })}style={{alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423'}}>
+                <H1 style={{fontSize: 20, justifyContent: 'center'}}>Legg til poeng</H1>
+              </Button>
 
-            </View>}
-          />
-
-            <Button full style={{backgroundColor: '#F9A423', marginTop: 10, marginBottom: 10}}>
-              <Text >Ny spiller</Text>
+            </View>
+            {/* Ny spiller  */}
+            <Button full onPress={() => this.addPlayer("joakim")} style={{backgroundColor: '#F9A423', height: 60}}>
+              <H3 >Ny spiller</H3>
             </Button>
           </View>
-          <View style={{flex: 1}}/>
 
         </View>
       </View>
@@ -212,27 +190,33 @@ const styles = StyleSheet.create({
   header: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     height: 80,
     marginTop: 24,
+    marginBottom: 30,
     padding: 10
   },
   content: {
     display: 'flex',
     justifyContent: 'flex-start',
-
     alignItems: 'center',
     flex: 1,
   },
-  playersList: {
-
+  modalBackground: {
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    alignItems: 'center',
+    paddingTop: 50,
+    justifyContent: 'flex-start',
+    flex: 1,
+    position: 'relative',
+    zIndex: 1,
   },
-  playerScores: {
-    flexDirection: 'row',
-  },
-  dropdownContent: {
-    width: '60%',
-
+  modalContent: {
+    width: '90%',
+    backgroundColor: '#fff',
+    padding: 25,
+    position: 'relative',
+    zIndex: 2,
   },
 });

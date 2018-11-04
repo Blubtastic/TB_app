@@ -59,8 +59,8 @@ const AppStack = createDrawerNavigator({
   Home: {
     screen: HomeScreen,
   },
-  Calendar: {
-    screen: CalendarScreen,
+  Kortspill: {
+    screen: KortspillScreen,
   },
   Vaskelister: {
     screen: VaskelisterScreen,
@@ -71,8 +71,8 @@ const AppStack = createDrawerNavigator({
   Turneringer: {
     screen: TurneringerScreen,
   },
-  Kortspill: {
-    screen: KortspillScreen,
+  Vorskalender: {
+    screen: CalendarScreen,
   },
   Døråpner: {
     screen: DoorOpenerScreen,
