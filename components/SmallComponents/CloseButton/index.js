@@ -2,7 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import { H1, Button, Icon } from 'native-base';
 
+/*
+CLOSEBUTTON COMPONENT: --------------------------------------------------------
+Close button that executes the function that is passed as props.
 
+Properties:
+- action: is executed when button is clicked.
+*/
 export default class CloseButton extends React.Component {
   constructor(props) {
     super(props);

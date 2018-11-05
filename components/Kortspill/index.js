@@ -1,18 +1,26 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal} from 'react-native';
-import { Content, Icon, H1, H2, H3, Item, Input, Form, Button } from 'native-base';
-
+import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput} from 'react-native';
+import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
 
 import CustomHeader from '../CustomHeader';
 import CloseButton from '../SmallComponents/CloseButton'
 
+/*
+KORTSPILL COMPONENT: ----------------------------------------------------------
+An instance of a card game.
+Many card games can exist at the same time, and is controlled by the
+cardgame menu component.
 
+Properties:
+- navigation: the react-router navigation. Used to navigate between app pages.
+*/
 export default class Kortspill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       players: [],
       modalVisible: false,
+      inputs: {},
     }
   }
   static navigationOptions = {
@@ -30,20 +38,33 @@ export default class Kortspill extends React.Component {
         {key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: null},
         {key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: null},
       ],
-    }, () => this.calculateSum())
-
+    }, () => this.rerenderPlayers())
   }
-  //Calculates the sum for each player in state.
-  calculateSum(){
+
+  //Restructures the list of players in state.
+  //Run this whenever content of players changes.
+  rerenderPlayers(){
+    //Copy state objects
     var players = this.state.players;
+    //Calculate scores
     for (i = 0; i < players.length; i++) {
       var totalScore = 0;
       for (score = 0; score < players[i].scores.length; score++) {
         totalScore += this.state.players[i].scores[score]
       }
       players[i].sum = totalScore;
-      this.setState({players: players});
     }
+    //Sort players by score
+    players.sort(function (a, b) {
+      return b.sum - a.sum;
+    });
+
+    //Reassign indexes (because players are sorted and perhaps deleted)
+    for (x = 0; x < players.length; x++){
+      players[x].key = x.toString()
+    }
+    //Update state
+    this.setState({players: players});
   }
 
   //Add new score to each player
@@ -62,7 +83,7 @@ export default class Kortspill extends React.Component {
     //3: Update state
     this.setState({players: newArray}, () => { console.log("new array: ", this.state.players) })
     //Update sum field for each player
-    this.calculateSum();
+    this.rerenderPlayers();
   }
 
   //Add a new player
@@ -76,9 +97,19 @@ export default class Kortspill extends React.Component {
     newPlayer.nextScore = null;
 
     newPlayers.push(newPlayer);
-    console.log(newPlayers);
     this.setState({players: newPlayers});
+    this.setState({players: newPlayers}, () => { this.rerenderPlayers() })
+    this.rerenderPlayers(); //Player state changes, must rebuild.
   }
+
+  //Jumps to next input field
+  focusNextField(id) {
+    if(id < this.state.players.length){
+      this.state.inputs[id].focus();
+    }
+  }
+
+
 
   render() {
     return (
@@ -114,14 +145,27 @@ export default class Kortspill extends React.Component {
                       data={this.state.players}
                       extraData={this.state}
                       keyExtractor={(item, index) => item.key}
+
                       renderItem={({item}) =>
                       <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={{flex: 1}}>{item.name}</Text>
                         {/* Ikke garantert at dette funker ettersom det setter state uten setState.*/}
-                        <Input style={{flex: 3}} placeholder={"Score"} keyboardType={'numeric'} onChangeText={ (text) => item.nextScore = parseInt(text) } />
+                        <TextInput
+                          style={{flex: 3, height: 60}}
+                          placeholder="Score"
+                          ref={ input => {
+                            this.state.inputs[item.key] = input;
+                          }}
+                          blurOnSubmit={ false }
+                          keyboardType={'number-pad'}
+                          onChangeText={ (text) => item.nextScore = parseInt(text) }
+                          onSubmitEditing={() => {
+                            this.focusNextField(parseInt(item.key) + 1);
+                          }}
+                        />
                       </View>}
                     />
-                    <Button full style={{backgroundColor: '#F9A423', height: 60}} onPress={() => this.addScores()}>
+                    <Button full style={{backgroundColor: '#F9A423', height: 60, marginTop: 20}} onPress={() => this.addScores()}>
                       <Text >Legg til</Text>
                     </Button>
                   </View>

@@ -4,7 +4,13 @@ import { Content } from 'native-base';
 
 import CustomHeader from '../CustomHeader';
 
+/*
+_name_ COMPONENT: --------------------------------------------------------
+_componentDescription_
 
+Properties:
+- _property_: _propertyDescription_
+*/
 export default class Calendar extends React.Component {
   constructor() {
     super();
