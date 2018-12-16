@@ -157,7 +157,7 @@ export default class Kortspill extends React.Component {
                               this.state.inputs[item.key] = input;
                             }}
                             blurOnSubmit={false}
-                            keyboardType={'number-pad'}
+                            keyboardType={'numeric'}
                             onChangeText={(text) => item.nextScore = parseInt(text)}
                             onSubmitEditing={() => {
                               this.focusNextField(parseInt(item.key) + 1);
