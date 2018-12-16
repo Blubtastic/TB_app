@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput} from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput } from 'react-native';
 import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
 
 import CustomHeader from '../CustomHeader';
@@ -26,24 +26,25 @@ export default class Kortspill extends React.Component {
   static navigationOptions = {
     drawerLabel: 'Kortspill',
     drawerIcon: (
-      <Image source={ require('../../images/kortspill.png') } style={{width: 24, height: 24}}/>
+      <Image source={require('../../images/kortspill.png')} style={{ width: 24, height: 24 }} />
     ),
   };
 
-  componentWillMount(){
+  componentWillMount() {
     //For testint. Later will set state from local storage.
-    this.setState({players:
-      [
-        {key: '0', name: 'Joakim', scores: [5, 10], sum: 0, nextScore: null},
-        {key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: null},
-        {key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: null},
-      ],
+    this.setState({
+      players:
+        [
+          { key: '0', name: 'Joakim', scores: [5, 10], sum: 0, nextScore: null },
+          { key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: null },
+          { key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: null },
+        ],
     }, () => this.rerenderPlayers())
   }
 
   //Restructures the list of players in state.
   //Run this whenever content of players changes.
-  rerenderPlayers(){
+  rerenderPlayers() {
     //Copy state objects
     var players = this.state.players;
     //Calculate scores
@@ -60,34 +61,34 @@ export default class Kortspill extends React.Component {
     });
 
     //Reassign indexes (because players are sorted and perhaps deleted)
-    for (x = 0; x < players.length; x++){
+    for (x = 0; x < players.length; x++) {
       players[x].key = x.toString()
     }
     //Update state
-    this.setState({players: players});
+    this.setState({ players: players });
   }
 
   //Add new score to each player
-  addScores(players){
+  addScores(players) {
     //Hide modal
     this.setState({ modalVisible: false })
     //1: Copy array because React sucks
     let newArray = this.state.players;
     //2: Update with new values
-    for (x = 0; x < newArray.length; x++){
-      if(newArray[x].nextScore != null) {
+    for (x = 0; x < newArray.length; x++) {
+      if (newArray[x].nextScore != null) {
         newArray[x].scores.push(newArray[x].nextScore)
         newArray[x].nextScore = null;
       }
     }
     //3: Update state
-    this.setState({players: newArray}, () => { console.log("new array: ", this.state.players) })
+    this.setState({ players: newArray }, () => { console.log("new array: ", this.state.players); });
     //Update sum field for each player
     this.rerenderPlayers();
   }
 
   //Add a new player
-  addPlayer(name){
+  addPlayer(name) {
     newPlayers = this.state.players;
     newPlayer = {};
     newPlayer.key = String(newPlayers.length + 1);
@@ -97,14 +98,14 @@ export default class Kortspill extends React.Component {
     newPlayer.nextScore = null;
 
     newPlayers.push(newPlayer);
-    this.setState({players: newPlayers});
-    this.setState({players: newPlayers}, () => { this.rerenderPlayers() })
+    this.setState({ players: newPlayers });
+    this.setState({ players: newPlayers }, () => { this.rerenderPlayers() })
     this.rerenderPlayers(); //Player state changes, must rebuild.
   }
 
   //Jumps to next input field
   focusNextField(id) {
-    if(id < this.state.players.length){
+    if (id < this.state.players.length) {
       this.state.inputs[id].focus();
     }
   }
@@ -113,7 +114,7 @@ export default class Kortspill extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         {/* HEADER/NAV ---------------------------------------------------- */}
         <View style={styles.header}>
           <H1>Poengtavle</H1>
@@ -123,7 +124,7 @@ export default class Kortspill extends React.Component {
         {/* CONTENT ------------------------------------------------------- */}
         <View style={styles.content}>
           {/* INPUT FIELDS FOR SCORES ---------- */}
-          <View style={{alignSelf: 'stretch', alignItems: 'center'}}>
+          <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
             <Modal
               animationType="fade"
               transparent={true}
@@ -131,13 +132,13 @@ export default class Kortspill extends React.Component {
               onRequestClose={() => {
                 this.setState({ modalVisible: false })
               }}>
-              <TouchableHighlight style={styles.modalBackground} onPress={ () => this.setState({ modalVisible: false }) }>
+              <TouchableHighlight style={styles.modalBackground} onPress={() => this.setState({ modalVisible: false })}>
                 <TouchableWithoutFeedback>
                   <View style={styles.modalContent}>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                       <H1>Legg til poeng</H1>
-                      <View style={{position: 'absolute', top: -20, right: -20}}>
-                        <CloseButton action={() => this.setState({ modalVisible: false }) } />
+                      <View style={{ position: 'absolute', top: -20, right: -20 }}>
+                        <CloseButton action={() => this.setState({ modalVisible: false })} />
                       </View>
                     </View>
 
@@ -145,27 +146,26 @@ export default class Kortspill extends React.Component {
                       data={this.state.players}
                       extraData={this.state}
                       keyExtractor={(item, index) => item.key}
-
-                      renderItem={({item}) =>
-                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={{flex: 1}}>{item.name}</Text>
-                        {/* Ikke garantert at dette funker ettersom det setter state uten setState.*/}
-                        <TextInput
-                          style={{flex: 3, height: 60}}
-                          placeholder="Score"
-                          ref={ input => {
-                            this.state.inputs[item.key] = input;
-                          }}
-                          blurOnSubmit={ false }
-                          keyboardType={'number-pad'}
-                          onChangeText={ (text) => item.nextScore = parseInt(text) }
-                          onSubmitEditing={() => {
-                            this.focusNextField(parseInt(item.key) + 1);
-                          }}
-                        />
-                      </View>}
+                      renderItem={({ item }) =>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <Text style={{ flex: 1 }}>{item.name}</Text>
+                          {/* Ikke garantert at dette funker ettersom det setter state uten setState. */}
+                          <TextInput
+                            style={{ flex: 3, height: 60 }}
+                            placeholder="Score"
+                            ref={input => {
+                              this.state.inputs[item.key] = input;
+                            }}
+                            blurOnSubmit={false}
+                            keyboardType={'number-pad'}
+                            onChangeText={(text) => item.nextScore = parseInt(text)}
+                            onSubmitEditing={() => {
+                              this.focusNextField(parseInt(item.key) + 1);
+                            }}
+                          />
+                        </View>}
                     />
-                    <Button full style={{backgroundColor: '#F9A423', height: 60, marginTop: 20}} onPress={() => this.addScores()}>
+                    <Button full style={{ backgroundColor: '#F9A423', height: 60, marginTop: 20 }} onPress={() => this.addScores()}>
                       <Text >Legg til</Text>
                     </Button>
                   </View>
@@ -175,38 +175,38 @@ export default class Kortspill extends React.Component {
           </View>
 
           {/* SHOW ALL PLAYERS (+ scores) ----------*/}
-          <View style={{alignSelf: 'stretch', flex: 1, justifyContent: 'space-between'}}>
-            <View style={{maxHeight: '90%'}}>
+          <View style={{ alignSelf: 'stretch', flex: 1, justifyContent: 'space-between' }}>
+            <View style={{ maxHeight: '90%' }}>
               {/* A list containing a list, showing each player and their scores. */}
               <FlatList
                 data={this.state.players}
                 extraData={this.state}
                 keyExtractor={(item, index) => item.key}
-                renderItem={({item}) =>
-                <View style={{flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10}}>
-                  <View style={{marginRight: 10, width: 80}}>
-                    <H3>{item.name}</H3>
-                    <Text style={{color: '#F9A423'}}>{item.sum + ' poeng'}</Text>
-                  </View>
-                  <FlatList
-                    data={item.scores}
-                    extraData={this.state}
-                    horizontal={true}
-                    keyExtractor={(item, index) => item.key}
-                    renderItem={({item}) =>
-                      <Text style={{paddingLeft: 6, paddingRight: 6}}>{item}</Text>
-                    }
-                  />
-                </View>}
+                renderItem={({ item }) =>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
+                    <View style={{ marginRight: 10, width: 80 }}>
+                      <H3>{item.name}</H3>
+                      <Text style={{ color: '#F9A423' }}>{item.sum + ' poeng'}</Text>
+                    </View>
+                    <FlatList
+                      data={item.scores}
+                      extraData={this.state}
+                      horizontal={true}
+                      keyExtractor={(_score, index) => `${item.key}-score-${index}`}
+                      renderItem={({ item }) =>
+                        <Text style={{ paddingLeft: 6, paddingRight: 6 }}>{item}</Text>
+                      }
+                    />
+                  </View>}
               />
               {/* Nye poeng  */}
-              <Button full onPress={() => this.setState({ modalVisible: true })}style={{alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423'}}>
-                <H1 style={{fontSize: 20, justifyContent: 'center'}}>Legg til poeng</H1>
+              <Button full onPress={() => this.setState({ modalVisible: true })} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
+                <H1 style={{ fontSize: 20, justifyContent: 'center' }}>Legg til poeng</H1>
               </Button>
 
             </View>
             {/* Ny spiller  */}
-            <Button full onPress={() => this.addPlayer("joakim")} style={{backgroundColor: '#F9A423', height: 60}}>
+            <Button full onPress={() => this.addPlayer("joakim")} style={{ backgroundColor: '#F9A423', height: 60 }}>
               <H3 >Ny spiller</H3>
             </Button>
           </View>
