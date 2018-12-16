@@ -26,20 +26,20 @@ export default class Vaskelister extends React.Component {
   };
 
   //Get the washing lists from the server.
-  componentDidMount(){
+  async componentDidMount(){
     //Server link
-    return fetch('http://tb-app-server-tb-app-server.a3c1.starter-us-west-1.openshiftapps.com/tb_app/vaskelister')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson,
-        }, function(){
-        });
-      })
-      .catch((error) =>{
-        console.error(error);
+    try {
+      const response = await fetch('http://tb-app-server-tb-app-server.a3c1.starter-us-west-1.openshiftapps.com/tb_app/vaskelister');
+      const responseJson = await response.json();
+
+      this.setState({
+        ...this.state,
+        isLoading: false,
+        dataSource: responseJson,
       });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render(){
