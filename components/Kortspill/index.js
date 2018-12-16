@@ -21,6 +21,7 @@ export default class Kortspill extends React.Component {
       players: [],
       modalVisible: false,
       inputs: {},
+      newName: null,
     }
   }
   static navigationOptions = {
@@ -89,18 +90,20 @@ export default class Kortspill extends React.Component {
 
   //Add a new player
   addPlayer(name) {
-    newPlayers = this.state.players;
-    newPlayer = {};
-    newPlayer.key = String(newPlayers.length + 1);
-    newPlayer.name = name;
-    newPlayer.scores = [];
-    newPlayer.sum = 0;
-    newPlayer.nextScore = null;
+    if (name != null){
+      newPlayers = this.state.players;
+      newPlayer = {};
+      newPlayer.key = String(newPlayers.length + 1);
+      newPlayer.name = name;
+      newPlayer.scores = [];
+      newPlayer.sum = 0;
+      newPlayer.nextScore = null;
 
-    newPlayers.push(newPlayer);
-    this.setState({ players: newPlayers });
-    this.setState({ players: newPlayers }, () => { this.rerenderPlayers() })
-    this.rerenderPlayers(); //Player state changes, must rebuild.
+      newPlayers.push(newPlayer);
+      this.setState({ players: newPlayers });
+      this.setState({ players: newPlayers }, () => { this.rerenderPlayers() })
+      this.rerenderPlayers(); //Player state changes, must rebuild.
+    }
   }
 
   //Jumps to next input field
@@ -121,8 +124,29 @@ export default class Kortspill extends React.Component {
           <CloseButton action={() => this.props.navigation.goBack(null)} />
         </View>
 
+
         {/* CONTENT ------------------------------------------------------- */}
         <View style={styles.content}>
+
+          {/* Ny spiller input field+btn  */}
+          <TextInput
+            style={{ height: 60, alignSelf: 'stretch',}}
+            placeholder="Legg til ny spiller"
+            ref={input => { this.textInput = input }}
+            blurOnSubmit={true}
+            keyboardType={'default'}
+            onChangeText={ (text) => this.setState({ newName: text }) }
+            onSubmitEditing={() => {
+              this.addPlayer(this.state.newName);
+              this.textInput.clear();
+            }}
+          />
+          {/*
+          <Button full onPress={() => this.addPlayer(this.state.newName)} style={{ backgroundColor: '#F9A423', height: 60 }}>
+            <H3 >Ny spiller</H3>
+          </Button>
+          */}
+
           {/* INPUT FIELDS FOR SCORES ---------- */}
           <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
             <Modal
@@ -176,7 +200,7 @@ export default class Kortspill extends React.Component {
 
           {/* SHOW ALL PLAYERS (+ scores) ----------*/}
           <View style={{ alignSelf: 'stretch', flex: 1, justifyContent: 'space-between' }}>
-            <View style={{ maxHeight: '90%' }}>
+            <View style={{ maxHeight: '100%' }}>
               {/* A list containing a list, showing each player and their scores. */}
               <FlatList
                 data={this.state.players}
@@ -205,10 +229,7 @@ export default class Kortspill extends React.Component {
               </Button>
 
             </View>
-            {/* Ny spiller  */}
-            <Button full onPress={() => this.addPlayer("joakim")} style={{ backgroundColor: '#F9A423', height: 60 }}>
-              <H3 >Ny spiller</H3>
-            </Button>
+
           </View>
 
         </View>
