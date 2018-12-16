@@ -1,6 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
 
+/*
+FOOTER COMPONENT: ----------------------------------------------------------
+Bottom navigation for the app. Not in use.
+
+PROPERTIES:
+*/
 
 export default class FooterNav extends React.Component {
   render() {

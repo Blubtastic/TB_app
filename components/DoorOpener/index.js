@@ -6,6 +6,13 @@ import {Client, Message} from 'react-native-paho-mqtt';
 
 import CustomHeader from '../CustomHeader';
 
+/*
+DOOR OPENER COMPONENT: ----------------------------------------------------------
+Door opener for teknobyen studentboliger. Contacts a server which contacts a raspberry PI, opening the front door to teknobyen.
+
+PROPERTIES:
+- navigation
+*/
 
 export default class DoorOpener extends React.Component {
   static navigationOptions = {

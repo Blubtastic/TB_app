@@ -2,6 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, View, Image} from 'react-native';
 import { Content, Header, Body, Icon, Title, Container } from 'native-base';
 
+/*
+CUSTOM HEADER: ----------------------------------------------------------
+The header that's displayed at almost al screens. Contains title, back/logo button and drawer button.
+PROPERTIES:
+- navigation
+- title
+- icon
+*/
+
 export default class CustomHeader extends React.Component {
   constructor(props) {
     super(props);

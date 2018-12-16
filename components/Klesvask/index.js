@@ -4,6 +4,11 @@ import { Content } from 'native-base';
 
 import CustomHeader from '../CustomHeader';
 
+/*
+KLESVASK COMPONENT: ----------------------------------------------------------
+Here you can see how many washing machines that are available, the remaining time for each machine and other stuff.
+PROPERTIES:
+*/
 
 export default class Klesvask extends React.Component {
   static navigationOptions = {

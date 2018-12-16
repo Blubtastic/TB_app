@@ -11,7 +11,7 @@ An instance of a card game.
 Many card games can exist at the same time, and is controlled by the
 cardgame menu component.
 
-Properties:
+PROPERTIES:
 - navigation: the react-router navigation. Used to navigate between app pages.
 */
 export default class Kortspill extends React.Component {
