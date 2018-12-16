@@ -24,6 +24,12 @@ export default class DoorOpener extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    console.log('Disconnecting from mqtt...');
+    this.client.disconnect();
+    this.client = undefined;
+  }
+
   static navigationOptions = {
     drawerLabel: 'Døråpner',
     drawerIcon: (
@@ -49,7 +55,8 @@ export default class DoorOpener extends React.Component {
     // Set event handlers
     this.client.on('connectionLost', (responseObject) => {
       if (responseObject.errorCode !== 0) {
-        console.error(responseObject.errorMessage);
+        console.warn(responseObject.errorCode, responseObject.errorMessage);
+        this.setState({ connecting: false, error: 'Huffameg, noe gikk alvorlig galt.' });
       }
     });
 
