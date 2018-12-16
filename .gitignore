@@ -21,3 +21,6 @@ config.js
 
 # Jetbrains IDE stuff
 .idea/
+
+# Excuberant CTags
+tags
