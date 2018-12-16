@@ -20,6 +20,7 @@ export default class CustomModal extends React.Component {
       modalVisible: this.props.modalVisible,
     }
   }
+  //Because react sucks. Update state properly
   componentWillReceiveProps(nextProps) {
     this.setState({ modalVisible: nextProps.modalVisible });
   }
@@ -38,9 +39,8 @@ export default class CustomModal extends React.Component {
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
 
-                //Render the HTML var passed in props
+                //Render the component from the props.
                 {this.props.children}
-
 
               </View>
             </TouchableWithoutFeedback>

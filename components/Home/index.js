@@ -9,6 +9,7 @@ HOME COMPONENT: ----------------------------------------------------------
 Homepage for the app. Links to all other parts of the app.
 PROPERTIES:
 */
+
 export default class Calendar extends React.Component {
   constructor() {
     super();
@@ -32,6 +33,7 @@ export default class Calendar extends React.Component {
 
           <View style={styles.content}>
 
+            {/* Shortcut to the most important component */}
             <ImageBackground style={styles.largeImg} source={require('../../images/kortspill.jpg')}>
               <TouchableHighlight style={styles.largeLink} onPress={() => navigate('Kortspill')}>
                 <View style={styles.textBar}>
@@ -41,6 +43,7 @@ export default class Calendar extends React.Component {
             </ImageBackground>
 
             <View style={styles.row}>
+              {/* Shortcut to normal component */}
               <ImageBackground style={styles.img} source={require('../../images/vaskelister.jpg')}>
                 <TouchableHighlight style={styles.link} onPress={() => navigate('Vaskelister')}>
                   <View style={styles.textBar}>

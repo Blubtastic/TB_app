@@ -4,7 +4,8 @@ import { Content, Header, Body, Icon, Title, Container } from 'native-base';
 
 /*
 CUSTOM HEADER: ----------------------------------------------------------
-The header that's displayed at almost al screens. Contains title, back/logo button and drawer button.
+The header that's displayed at almost al screens.
+Contains title, back/logo button and "open drawer" button.
 PROPERTIES:
 - navigation
 - title
@@ -13,6 +14,7 @@ PROPERTIES:
 
 export default class CustomHeader extends React.Component {
   render() {
+    //If header is on front page (show logo instead of back button) 
     if (this.props.icon != null){
       return (
         <View style={styles.body} >

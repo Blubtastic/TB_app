@@ -25,7 +25,9 @@ export default class Vaskelister extends React.Component {
     ),
   };
 
+  //Get the washing lists from the server.
   componentDidMount(){
+    //Server link
     return fetch('http://tb-app-server-tb-app-server.a3c1.starter-us-west-1.openshiftapps.com/tb_app/vaskelister')
       .then((response) => response.json())
       .then((responseJson) => {
@@ -50,7 +52,7 @@ export default class Vaskelister extends React.Component {
         </View>
       )
     }
-    //Render content after loading
+    //Render content when loading is done
     return(
       <View style={{flex: 1}}>
         <CustomHeader title={"Vaskelister"} icon={"ios-arrow-back"} navigation={this.props.navigation} />
