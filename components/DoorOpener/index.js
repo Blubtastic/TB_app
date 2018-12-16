@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ActivityIndicator } from 'react-native';
 import Config from '../../config';
 import { Client, Message } from 'react-native-paho-mqtt';
 
@@ -91,7 +91,10 @@ export default class DoorOpener extends React.Component {
         <CustomHeader title={'Døråpner'} icon={'ios-arrow-back'} navigation={this.props.navigation} />
         <View style={styles.content}>
           {this.state.connecting ?
-            <Text>Etablerer tilkobling til dørguden...</Text> :
+            <View>
+              <ActivityIndicator size="large" color="#000000" />
+              <Text>Etablerer tilkobling til dørguden...</Text>
+            </View> :
             this.state.opened ?
               <Text>Døra er (eller burde hvertfall være) åpen.</Text> :
               <Button title="Åpne døra" onPress={() => this.abraLaPutaPuerta()} />}

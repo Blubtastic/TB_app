@@ -46,7 +46,7 @@ export default class Vaskelister extends React.Component {
       return(
         <View style={{flex: 1}}>
           <CustomHeader title={"Vaskelister"} icon={"ios-arrow-back"} navigation={this.props.navigation} />
-          <ActivityIndicator/>
+          <ActivityIndicator size="large" color="#000000" />
         </View>
       )
     }
