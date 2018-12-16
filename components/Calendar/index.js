@@ -4,6 +4,15 @@ import { Content } from 'native-base';
 
 import CustomHeader from '../CustomHeader';
 
+/*
+KALENDER COMPONENT: ----------------------------------------------------------
+The calendar screen, not yet implemented.
+A list of all vorspiels at teknobyen the coming week-ish.
+Users can create new events, and add information like timespace, #of attendees and contact information.
+
+PROPERTIES:
+None so far
+*/
 
 export default class Calendar extends React.Component {
   static navigationOptions = {

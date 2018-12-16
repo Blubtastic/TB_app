@@ -3,6 +3,14 @@ import { StyleSheet, Text, View, Button, Image} from 'react-native';
 
 import CustomHeader from '../CustomHeader';
 
+/*
+TOURNAMENT COMPONENT: ----------------------------------------------------------
+Not implemented. Tournament page for eg. pool, pingpoing, beerpong and so on ..
+
+PROPERTIES:
+- navigation.
+*/
+
 export default class Turneringer extends React.Component {
   static navigationOptions = {
     drawerLabel: 'Turneringer',

@@ -3,6 +3,12 @@ import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image} from 'react
 import { Content, Button } from 'native-base';
 import CustomHeader from '../CustomHeader';
 
+/*
+VASKELISTER COMPONENT: ----------------------------------------------------------
+Shows the washing lists for the next month. Room numbers + date for each row.
+PROPERTIES:
+- navigation
+*/
 
 export default class Vaskelister extends React.Component {
   constructor(props) {

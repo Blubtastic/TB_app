@@ -5,11 +5,9 @@ import { Content } from 'native-base';
 import CustomHeader from '../CustomHeader';
 
 /*
-_name_ COMPONENT: --------------------------------------------------------
-_componentDescription_
-
-Properties:
-- _property_: _propertyDescription_
+HOME COMPONENT: ----------------------------------------------------------
+Homepage for the app. Links to all other parts of the app.
+PROPERTIES:
 */
 export default class Calendar extends React.Component {
   constructor() {
