@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button, Image} from 'react-native';
 import { Content } from 'native-base';
 
-import CustomHeader from '../CustomHeader';
+import CustomHeader from '../SmallComponents/CustomHeader';
 
 /*
 KLESVASK COMPONENT: ----------------------------------------------------------

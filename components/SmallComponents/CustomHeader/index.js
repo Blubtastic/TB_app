@@ -14,7 +14,7 @@ PROPERTIES:
 
 export default class CustomHeader extends React.Component {
   render() {
-    //If header is on front page (show logo instead of back button) 
+    //If header is on front page (show logo instead of back button)
     if (this.props.icon != null){
       return (
         <View style={styles.body} >
@@ -28,7 +28,7 @@ export default class CustomHeader extends React.Component {
     } else {
       return (
         <View style={styles.body} >
-          <Image source={ require('../../images/logo.png') } style={styles.logo} onPress={() => this.props.navigate() } />
+          <Image source={ require('../../../images/logo.png') } style={styles.logo} onPress={() => this.props.navigate() } />
           <View style={styles.bodyContainer}>
             <Title>{this.props.title}</Title>
           </View>

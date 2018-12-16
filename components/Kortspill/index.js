@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput } from 'react-native';
 import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
 
-import CustomHeader from '../CustomHeader';
-import CloseButton from '../SmallComponents/CloseButton'
+import CustomHeader from '../SmallComponents/CustomHeader';
+import CloseButton from '../SmallComponents/CloseButton';
 
 /*
 KORTSPILL COMPONENT: ----------------------------------------------------------
@@ -223,13 +223,11 @@ export default class Kortspill extends React.Component {
                     />
                   </View>}
               />
-              {/* Nye poeng  */}
+              {/* "Legg til poeng"-knapp  */}
               <Button full onPress={() => this.setState({ modalVisible: true })} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
                 <H1 style={{ fontSize: 20, justifyContent: 'center' }}>Legg til poeng</H1>
               </Button>
-
             </View>
-
           </View>
 
         </View>

@@ -4,7 +4,7 @@ import {Root, Container, Content, Header, Left, Body, Right, Title, Footer, Foot
 import { createDrawerNavigator, DrawerItems } from 'react-navigation'; // Version can be specified in package.json
 import Expo from 'expo'
 
-import CustomHeader from './components/CustomHeader';
+import CustomHeader from './components/SmallComponents/CustomHeader';
 
 import HomeScreen from './components/Home';
 import CalendarScreen from './components/Calendar';

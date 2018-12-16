@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image} from 'react-native';
 import { Content, Button } from 'native-base';
-import CustomHeader from '../CustomHeader';
+import CustomHeader from '../SmallComponents/CustomHeader';
 
 /*
 VASKELISTER COMPONENT: ----------------------------------------------------------

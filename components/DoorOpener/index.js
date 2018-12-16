@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Image, ActivityIndicator } from 'react-
 import Config from '../../config';
 import { Client, Message } from 'react-native-paho-mqtt';
 
-import CustomHeader from '../CustomHeader';
+import CustomHeader from '../SmallComponents/CustomHeader';
 
 /*
 DOOR OPENER COMPONENT: ----------------------------------------------------------
