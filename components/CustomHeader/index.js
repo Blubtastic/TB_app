@@ -3,9 +3,6 @@ import { StyleSheet, Text, View, Image} from 'react-native';
 import { Content, Header, Body, Icon, Title, Container } from 'native-base';
 
 export default class CustomHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
     if (this.props.icon != null){
       return (
@@ -17,9 +14,8 @@ export default class CustomHeader extends React.Component {
           <Icon style={styles.icon} name="md-menu" onPress={() => this.props.navigation.openDrawer() }/>
         </View>
       );
-    } else{
+    } else {
       return (
-
         <View style={styles.body} >
           <Image source={ require('../../images/logo.png') } style={styles.logo} onPress={() => this.props.navigate() } />
           <View style={styles.bodyContainer}>
@@ -27,14 +23,12 @@ export default class CustomHeader extends React.Component {
           </View>
           <Icon style={styles.icon} name="md-menu" onPress={() => this.props.navigation.openDrawer() }/>
         </View>
-
       );
     }
   }
 }
 
 const styles = StyleSheet.create({
-
   body: {
     paddingTop: 24,
     backgroundColor: '#F9A423',
