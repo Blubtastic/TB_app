@@ -27,7 +27,7 @@ export default class CustomModal extends React.Component {
 
   render() {
     return (
-      <View style={{alignSelf: 'stretch', alignItems: 'center'}}>
+      <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
         <Modal
           animationType="fade"
           transparent={true}
@@ -35,11 +35,10 @@ export default class CustomModal extends React.Component {
           onRequestClose={() => {
             this.setState({ modalVisible: false })
           }}>
-          <TouchableHighlight style={styles.modalBackground} onPress={ () => this.setState({ modalVisible: false }) }>
+          <TouchableHighlight style={styles.modalBackground} onPress={() => this.setState({ modalVisible: false })}>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
 
-                //Render the component from the props.
                 {this.props.children}
 
               </View>

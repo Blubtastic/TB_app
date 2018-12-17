@@ -4,6 +4,7 @@ import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
 
 import CustomHeader from '../SmallComponents/CustomHeader';
 import CloseButton from '../SmallComponents/CloseButton';
+import CustomModal from '../SmallComponents/CustomModal';
 
 /*
 KORTSPILL COMPONENT: ----------------------------------------------------------
@@ -148,55 +149,45 @@ export default class Kortspill extends React.Component {
           */}
 
           {/* INPUT FIELDS FOR SCORES ---------- */}
-          <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={this.state.modalVisible}
-              onRequestClose={() => {
-                this.setState({ modalVisible: false })
-              }}>
-              <TouchableHighlight style={styles.modalBackground} onPress={() => this.setState({ modalVisible: false })}>
-                <TouchableWithoutFeedback>
-                  <View style={styles.modalContent}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                      <H1>Legg til poeng</H1>
-                      <View style={{ position: 'absolute', top: -20, right: -20 }}>
-                        <CloseButton action={() => this.setState({ modalVisible: false })} />
-                      </View>
-                    </View>
 
-                    <FlatList
-                      data={this.state.players}
-                      extraData={this.state}
-                      keyExtractor={(item, index) => item.key}
-                      renderItem={({ item }) =>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <Text style={{ flex: 1 }}>{item.name}</Text>
-                          {/* Ikke garantert at dette funker ettersom det setter state uten setState. */}
-                          <TextInput
-                            style={{ flex: 3, height: 60 }}
-                            placeholder="Score"
-                            ref={input => {
-                              this.state.inputs[item.key] = input;
-                            }}
-                            blurOnSubmit={false}
-                            keyboardType={'numeric'}
-                            onChangeText={(text) => item.nextScore = parseInt(text)}
-                            onSubmitEditing={() => {
-                              this.focusNextField(parseInt(item.key) + 1);
-                            }}
-                          />
-                        </View>}
-                    />
-                    <Button full style={{ backgroundColor: '#F9A423', height: 60, marginTop: 20 }} onPress={() => this.addScores()}>
-                      <Text >Legg til</Text>
-                    </Button>
-                  </View>
-                </TouchableWithoutFeedback>
-              </TouchableHighlight>
-            </Modal>
-          </View>
+          <CustomModal modalVisible={this.state.modalVisible}>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+              <H1>Legg til poeng</H1>
+              <View style={{ position: 'absolute', top: -20, right: -20 }}>
+                <CloseButton action={() => this.setState({ modalVisible: false })} />
+              </View>
+            </View>
+            <FlatList
+              data={this.state.players}
+              extraData={this.state}
+              keyExtractor={(item, index) => item.key}
+              renderItem={({ item }) =>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={{ flex: 1 }}> {item.name} </Text>
+                  {/* Ikke garantert at dette funker ettersom det setter state uten setState. */}
+                  <TextInput
+                    style={{ flex: 3, height: 60 }}
+                    placeholder="Score"
+                    ref={input => {
+                      this.state.inputs[item.key] = input;
+                    }}
+                    blurOnSubmit={false}
+                    keyboardType={'numeric'}
+                    onChangeText={(text) => item.nextScore = parseInt(text)}
+                    onSubmitEditing={() => {
+                      this.focusNextField(parseInt(item.key) + 1);
+                    }}
+                  />
+                </View>
+              }
+            />
+            <Button full style={{ backgroundColor: '#F9A423', height: 60, marginTop: 20 }} onPress={() => this.addScores()}>
+              <Text>Legg til</Text>
+            </Button>
+
+          </CustomModal>
+
 
           {/* SHOW ALL PLAYERS (+ scores) ----------*/}
           <View style={{ alignSelf: 'stretch', flex: 1, justifyContent: 'space-between' }}>
