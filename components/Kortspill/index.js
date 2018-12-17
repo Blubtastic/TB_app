@@ -24,6 +24,8 @@ export default class Kortspill extends React.Component {
       inputs: {},
       newName: null,
     }
+
+    this.toggleModal = this.toggleModal.bind(this);
   }
   static navigationOptions = {
     drawerLabel: 'Kortspill',
@@ -73,7 +75,7 @@ export default class Kortspill extends React.Component {
   //Add new score to each player
   addScores(players) {
     //Hide modal
-    this.setState({ modalVisible: false })
+    this.toggleModal(false);
     //1: Copy array because React sucks
     let newArray = this.state.players;
     //2: Update with new values
@@ -114,6 +116,10 @@ export default class Kortspill extends React.Component {
     }
   }
 
+  toggleModal(show){
+    this.setState({ modalVisible: show });
+  }
+
 
 
   render() {
@@ -150,12 +156,12 @@ export default class Kortspill extends React.Component {
 
           {/* INPUT FIELDS FOR SCORES ---------- */}
 
-          <CustomModal modalVisible={this.state.modalVisible}>
+          <CustomModal modalVisible={this.state.modalVisible} toggleModal={this.toggleModal}>
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <H1>Legg til poeng</H1>
               <View style={{ position: 'absolute', top: -20, right: -20 }}>
-                <CloseButton action={() => this.setState({ modalVisible: false })} />
+                <CloseButton action={ () => this.toggleModal(false) } />
               </View>
             </View>
             <FlatList

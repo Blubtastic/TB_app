@@ -10,15 +10,14 @@ Displays a smaller screen on top of the current screen (a modal). Can be used fo
 Pass a child component as props to render it inside the modal.
 
 PROPERTIES:
-- modalVisible: toggle modal
 - children: component to be rendered inside modal.
+- modalVisible: toggle modal
+- toggleModal: function for setting the state of modalVisible in parent. 
 */
 export default class CustomModal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      modalVisible: this.props.modalVisible,
-    }
+    this.state = { modalVisible: props.modalVisible }
   }
   //Because react sucks. Update state properly
   componentWillReceiveProps(nextProps) {
@@ -27,15 +26,15 @@ export default class CustomModal extends React.Component {
 
   render() {
     return (
-      <View style={{ alignSelf: 'stretch', alignItems: 'center' }}>
+      <View style={{ alignSelf: 'stretch', alignItems: 'center', maxHeight: '80%' }}>
         <Modal
           animationType="fade"
           transparent={true}
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            this.setState({ modalVisible: false })
+            this.props.toggleModal(false);
           }}>
-          <TouchableHighlight style={styles.modalBackground} onPress={() => this.setState({ modalVisible: false })}>
+          <TouchableHighlight style={styles.modalBackground} onPress={() => this.props.toggleModal(false) }>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
 
@@ -52,14 +51,6 @@ export default class CustomModal extends React.Component {
 
 //STYLES
 const styles = StyleSheet.create({
-  closeBtn: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#F9A423',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   modalBackground: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
@@ -70,6 +61,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: '90%',
+    maxHeight: '80%',
     backgroundColor: '#fff',
     padding: 25,
     position: 'relative',
