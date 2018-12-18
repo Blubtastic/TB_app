@@ -7,21 +7,18 @@ import CloseButton from '../CloseButton'
 /*
 CUSTOMMODAL COMPONENT: --------------------------------------------------------
 Displays a smaller screen on top of the current screen (a modal). Can be used for a variety of purposes.
-Pass a child component as props to render it inside the modal.
+Simply put the content between the opening and closing tag to render it inside the modal.
 
 PROPERTIES:
-- children: component to be rendered inside modal.
+- title: modal title
 - modalVisible: toggle modal
-- toggleModal: function for setting the state of modalVisible in parent. 
+- toggleModal: function for setting the state of modalVisible in parent.
+
+- children: component to be rendered inside the modal. Put this content between the brackets.
 */
 export default class CustomModal extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { modalVisible: props.modalVisible }
-  }
-  //Because react sucks. Update state properly
-  componentWillReceiveProps(nextProps) {
-    this.setState({ modalVisible: nextProps.modalVisible });
   }
 
   render() {
@@ -30,13 +27,19 @@ export default class CustomModal extends React.Component {
         <Modal
           animationType="fade"
           transparent={true}
-          visible={this.state.modalVisible}
+          visible={this.props.modalVisible}
           onRequestClose={() => {
             this.props.toggleModal(false);
           }}>
           <TouchableHighlight style={styles.modalBackground} onPress={() => this.props.toggleModal(false) }>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <H1>{this.props.title}</H1>
+                  <View style={{ position: 'absolute', top: -20, right: -20 }}>
+                    <CloseButton action={ () => this.props.toggleModal(false) } />
+                  </View>
+                </View>
 
                 {this.props.children}
 

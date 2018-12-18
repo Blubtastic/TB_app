@@ -4,6 +4,7 @@ import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
 
 import CustomHeader from '../SmallComponents/CustomHeader';
 import CloseButton from '../SmallComponents/CloseButton';
+import DeleteButton from '../SmallComponents/DeleteButton';
 import CustomModal from '../SmallComponents/CustomModal';
 
 /*
@@ -20,12 +21,14 @@ export default class Kortspill extends React.Component {
     super(props);
     this.state = {
       players: [],
+      selectedPlayer: null,
       modalVisible: false,
+      playerModalVisible: false,
       inputs: {},
       newName: null,
     }
-
     this.toggleModal = this.toggleModal.bind(this);
+    this.toggleModalPlayer = this.toggleModalPlayer.bind(this);
   }
   static navigationOptions = {
     drawerLabel: 'Kortspill',
@@ -35,7 +38,7 @@ export default class Kortspill extends React.Component {
   };
 
   componentWillMount() {
-    //For testint. Later will set state from local storage.
+    //For testing. Later will set state from local storage.
     this.setState({
       players:
         [
@@ -47,7 +50,7 @@ export default class Kortspill extends React.Component {
   }
 
   //Restructures the list of players in state.
-  //Run this whenever content of players changes.
+  //Run this whenever content of players changes ------------------------------
   rerenderPlayers() {
     //Copy state objects
     var players = this.state.players;
@@ -72,7 +75,7 @@ export default class Kortspill extends React.Component {
     this.setState({ players: players });
   }
 
-  //Add new score to each player
+  //Add new score to each player ---------------------------------------------
   addScores(players) {
     //Hide modal
     this.toggleModal(false);
@@ -91,7 +94,7 @@ export default class Kortspill extends React.Component {
     this.rerenderPlayers();
   }
 
-  //Add a new player
+  //Add a new player ---------------------------------------------------------
   addPlayer(name) {
     if (name != null){
       newPlayers = this.state.players;
@@ -109,15 +112,23 @@ export default class Kortspill extends React.Component {
     }
   }
 
-  //Jumps to next input field
+  //Jumps to next input field ------------------------------------------------
   focusNextField(id) {
     if (id < this.state.players.length) {
       this.state.inputs[id].focus();
     }
   }
 
-  toggleModal(show){
+  toggleModal(show){ //--------------------------------------------------------
     this.setState({ modalVisible: show });
+  }
+  toggleModalPlayer(show){ //---------------------------------------------------
+    this.setState({ playerModalVisible: show });
+  }
+
+  selectPlayer(player){
+    this.toggleModalPlayer(true);
+    console.log(player);
   }
 
 
@@ -154,16 +165,8 @@ export default class Kortspill extends React.Component {
           </Button>
           */}
 
-          {/* INPUT FIELDS FOR SCORES ---------- */}
-
-          <CustomModal modalVisible={this.state.modalVisible} toggleModal={this.toggleModal}>
-
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <H1>Legg til poeng</H1>
-              <View style={{ position: 'absolute', top: -20, right: -20 }}>
-                <CloseButton action={ () => this.toggleModal(false) } />
-              </View>
-            </View>
+          {/* Modal for adding scores */}
+          <CustomModal modalVisible={this.state.modalVisible} toggleModal={this.toggleModal} title={"Legg til poeng"}>
             <FlatList
               data={this.state.players}
               extraData={this.state}
@@ -191,11 +194,27 @@ export default class Kortspill extends React.Component {
             <Button full style={{ backgroundColor: '#F9A423', height: 60, marginTop: 20 }} onPress={() => this.addScores()}>
               <Text>Legg til</Text>
             </Button>
+          </CustomModal>
 
+          {/* Modal for deleting players/scores */}
+          <CustomModal modalVisible={this.state.playerModalVisible} toggleModal={this.toggleModalPlayer} title={this.state.players[0].name}>
+            <FlatList
+              data={this.state.players[0].scores}
+              extraData={this.state}
+              renderItem={({ item }) =>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={{ flex: 1 }}> {item} </Text>
+                  <DeleteButton action={() => this.props.navigation.goBack(null)} />
+                </View>
+              }
+            />
+            <Button full onPress={() => this.setState({ modalVisible: true })} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
+              <H3 style={{ fontSize: 20, justifyContent: 'center' }}>Slett spiller</H3>
+            </Button>
           </CustomModal>
 
 
-          {/* SHOW ALL PLAYERS (+ scores) ----------*/}
+          {/* SHOW LIST OF PLAYERS w/scores ----------*/}
           <View style={{ alignSelf: 'stretch', flex: 1, justifyContent: 'space-between' }}>
             <View style={{ maxHeight: '100%' }}>
               {/* A list containing a list, showing each player and their scores. */}
@@ -204,21 +223,26 @@ export default class Kortspill extends React.Component {
                 extraData={this.state}
                 keyExtractor={(item, index) => item.key}
                 renderItem={({ item }) =>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
-                    <View style={{ marginRight: 10, width: 80 }}>
-                      <H3>{item.name}</H3>
-                      <Text style={{ color: '#F9A423' }}>{item.sum + ' poeng'}</Text>
+
+                  <TouchableHighlight onPress={ () => this.selectPlayer() } >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
+                      <View style={{ marginRight: 10, width: 80 }}>
+                        <H3>{item.name}</H3>
+                        <Text style={{ color: '#F9A423' }}>{item.sum + ' poeng'}</Text>
+                      </View>
+                      <FlatList
+                        data={item.scores}
+                        extraData={this.state}
+                        horizontal={true}
+                        keyExtractor={(_score, index) => `${item.key}-score-${index}`}
+                        renderItem={({ item }) =>
+                          <Text style={{ paddingLeft: 6, paddingRight: 6 }}>{item}</Text>
+                        }
+                      />
                     </View>
-                    <FlatList
-                      data={item.scores}
-                      extraData={this.state}
-                      horizontal={true}
-                      keyExtractor={(_score, index) => `${item.key}-score-${index}`}
-                      renderItem={({ item }) =>
-                        <Text style={{ paddingLeft: 6, paddingRight: 6 }}>{item}</Text>
-                      }
-                    />
-                  </View>}
+                  </TouchableHighlight>
+
+                }
               />
               {/* "Legg til poeng"-knapp  */}
               <Button full onPress={() => this.setState({ modalVisible: true })} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
