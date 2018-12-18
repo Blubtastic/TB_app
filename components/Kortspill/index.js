@@ -21,7 +21,7 @@ export default class Kortspill extends React.Component {
     super(props);
     this.state = {
       players: [],
-      selectedPlayer: null,
+      selectedPlayer: {key: '', name: '', scores: [], sum: 0, nextScore: null},
       modalVisible: false,
       playerModalVisible: false,
       inputs: {},
@@ -42,7 +42,7 @@ export default class Kortspill extends React.Component {
     this.setState({
       players:
         [
-          { key: '0', name: 'Joakim', scores: [5, 10], sum: 0, nextScore: null },
+          { key: '0', name: 'Joakim', scores: [5, 10, 5, 20], sum: 0, nextScore: null },
           { key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: null },
           { key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: null },
         ],
@@ -52,9 +52,8 @@ export default class Kortspill extends React.Component {
   //Restructures the list of players in state.
   //Run this whenever content of players changes ------------------------------
   rerenderPlayers() {
-    //Copy state objects
+    //Copy state and calculate scores
     var players = this.state.players;
-    //Calculate scores
     for (i = 0; i < players.length; i++) {
       var totalScore = 0;
       for (score = 0; score < players[i].scores.length; score++) {
@@ -62,35 +61,28 @@ export default class Kortspill extends React.Component {
       }
       players[i].sum = totalScore;
     }
-    //Sort players by score
-    players.sort(function (a, b) {
+    players.sort(function (a, b) { //Sort players by score
       return b.sum - a.sum;
     });
-
     //Reassign indexes (because players are sorted and perhaps deleted)
     for (x = 0; x < players.length; x++) {
       players[x].key = x.toString()
     }
-    //Update state
     this.setState({ players: players });
   }
 
   //Add new score to each player ---------------------------------------------
   addScores(players) {
-    //Hide modal
     this.toggleModal(false);
-    //1: Copy array because React sucks
+    // Copy array & update with new values
     let newArray = this.state.players;
-    //2: Update with new values
     for (x = 0; x < newArray.length; x++) {
       if (newArray[x].nextScore != null) {
         newArray[x].scores.push(newArray[x].nextScore)
         newArray[x].nextScore = null;
       }
     }
-    //3: Update state
     this.setState({ players: newArray }, () => { console.log("new array: ", this.state.players); });
-    //Update sum field for each player
     this.rerenderPlayers();
   }
 
@@ -125,10 +117,30 @@ export default class Kortspill extends React.Component {
   toggleModalPlayer(show){ //---------------------------------------------------
     this.setState({ playerModalVisible: show });
   }
-
   selectPlayer(player){
+    this.setState({selectedPlayer: player});
+    console.log("player: " + player.name);
     this.toggleModalPlayer(true);
-    console.log(player);
+  }
+
+  //TODO: Use keys to delete correct item when duplicate scores are present.
+  deleteScore(score){
+    let playerIndex = this.state.players.indexOf(this.state.selectedPlayer);
+    let scoreIndex = this.state.selectedPlayer.scores.indexOf(score);
+    let tempArray = this.state.players;
+    tempArray[playerIndex].scores.splice(scoreIndex, 1);
+    this.setState({players: tempArray});
+
+    console.log("index: " + scoreIndex);
+  }
+  //Deletes "selectedPlayer" from the players list.
+  deletePlayer(){
+    let index = this.state.players.indexOf(this.state.selectedPlayer);
+    let tempArray = this.state.players;
+    tempArray.splice(index, 1);
+    this.setState({players: tempArray});
+
+    this.toggleModalPlayer(false);
   }
 
 
@@ -197,18 +209,19 @@ export default class Kortspill extends React.Component {
           </CustomModal>
 
           {/* Modal for deleting players/scores */}
-          <CustomModal modalVisible={this.state.playerModalVisible} toggleModal={this.toggleModalPlayer} title={this.state.players[0].name}>
+          {/* TODO: generate keys */}
+          <CustomModal modalVisible={this.state.playerModalVisible} toggleModal={this.toggleModalPlayer} title={this.state.selectedPlayer.name}>
             <FlatList
-              data={this.state.players[0].scores}
+              data={this.state.selectedPlayer.scores}
               extraData={this.state}
               renderItem={({ item }) =>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={{ flex: 1 }}> {item} </Text>
-                  <DeleteButton action={() => this.props.navigation.goBack(null)} />
+                  <DeleteButton action={() => this.deleteScore(item)} />
                 </View>
               }
             />
-            <Button full onPress={() => this.setState({ modalVisible: true })} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
+            <Button full onPress={() => this.deletePlayer()} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
               <H3 style={{ fontSize: 20, justifyContent: 'center' }}>Slett spiller</H3>
             </Button>
           </CustomModal>
@@ -224,7 +237,7 @@ export default class Kortspill extends React.Component {
                 keyExtractor={(item, index) => item.key}
                 renderItem={({ item }) =>
 
-                  <TouchableHighlight onPress={ () => this.selectPlayer() } >
+                  <TouchableHighlight onPress={ () => this.selectPlayer(item) } >
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
                       <View style={{ marginRight: 10, width: 80 }}>
                         <H3>{item.name}</H3>

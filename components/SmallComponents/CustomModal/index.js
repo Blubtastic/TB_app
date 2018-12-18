@@ -34,7 +34,7 @@ export default class CustomModal extends React.Component {
           <TouchableHighlight style={styles.modalBackground} onPress={() => this.props.toggleModal(false) }>
             <TouchableWithoutFeedback>
               <View style={styles.modalContent}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                   <H1>{this.props.title}</H1>
                   <View style={{ position: 'absolute', top: -20, right: -20 }}>
                     <CloseButton action={ () => this.props.toggleModal(false) } />
