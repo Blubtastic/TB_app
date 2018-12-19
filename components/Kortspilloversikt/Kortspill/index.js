@@ -20,7 +20,7 @@ export default class Kortspill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      players: [], 
+      players: [],
       selectedPlayer: {key: '', name: '', scores: [], sum: 0, nextScore: null},
       modalVisible: false,
       playerModalVisible: false,
@@ -71,8 +71,10 @@ export default class Kortspill extends React.Component {
         newArray[x].nextScore = null;
       }
     }
-    this.setState({ players: newArray }, () => { console.log("new array: ", this.state.players); });
+    this.setState({ players: newArray });
     this.rerenderPlayers();
+
+    this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
   }
 
   //Add a new player ---------------------------------------------------------
@@ -90,6 +92,8 @@ export default class Kortspill extends React.Component {
       this.setState({ players: newPlayers });
       this.setState({ players: newPlayers }, () => { this.rerenderPlayers() })
       this.rerenderPlayers(); //Player state changes, must rebuild.
+
+      this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
     }
   }
 
@@ -116,6 +120,8 @@ export default class Kortspill extends React.Component {
     let tempArray = this.state.players;
     tempArray[playerIndex].scores.splice(index, 1);
     this.setState({players: tempArray});
+
+    this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
   }
   //Deletes "selectedPlayer" from the players list.
   deletePlayer(){
@@ -123,8 +129,9 @@ export default class Kortspill extends React.Component {
     let tempArray = this.state.players;
     tempArray.splice(index, 1);
     this.setState({players: tempArray});
-
     this.toggleModalPlayer(false);
+
+    this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
   }
 
 
@@ -134,7 +141,7 @@ export default class Kortspill extends React.Component {
       <View style={{ flex: 1 }}>
         {/* HEADER/NAV ---------------------------------------------------- */}
         <View style={styles.header}>
-          <H1>Poengtavle</H1>
+          <H1>{this.props.gameTitle}</H1>
           <CloseButton action={() => this.props.showCardGame(false)} />
         </View>
 
