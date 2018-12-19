@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableHighlight, ImageBackground} from 'react-native';
+import { AsyncStorage, StyleSheet, Text, View, Button, Image, TouchableHighlight, ImageBackground} from 'react-native';
 import { Content } from 'native-base';
 
 import CustomHeader from '../SmallComponents/CustomHeader';
@@ -17,6 +17,8 @@ export default class Kortspilloversikt extends React.Component {
     super(props);
     this.state = {
       showCardGame: false,
+      cardGames: [], //List with all list of players. This is saved in localstorage.
+      players: [], //The currently selected list of players.
     }
 
     this.showCardGame = this.showCardGame.bind(this);
@@ -28,9 +30,50 @@ export default class Kortspilloversikt extends React.Component {
     ),
   };
 
+  componentWillMount() {
+    //Generate players to later pass them into kortspill. For test.
+    this.setState({
+      players:
+        [
+          { key: '0', name: 'Joakim', scores: [5, 10, 5, 20], sum: 40, nextScore: null },
+          { key: '1', name: 'Martin', scores: [3, 8], sum: 11, nextScore: null },
+          { key: '2', name: 'Sølve', scores: [0, 12], sum: 12, nextScore: null },
+        ],
+    });
+    this.storeData();
+  }
+
+  storeData = async () => {
+    try {
+      await AsyncStorage.setItem('key1', 'this string has been stored!');
+    }
+    catch (error) {
+      console.log("error saving data. Error: " + error);
+    }
+  }
+  retrieveData = async () => {
+    try{
+      const value = await AsyncStorage.getItem('key1');
+      if(value !== null) {
+        //We have data!
+        console.log("value retrieved from localstorage: " + value);
+      }
+    }
+    catch (error) {
+      console.log("Error retrieving data. Error: " + error);
+    }
+  }
+
   showCardGame(show){
     this.setState({ showCardGame: show })
   }
+
+  //TODO: LOAD/SAVE playerdata from localstorage
+  //TODO: Generate list from save files
+
+  //TODO Function for new card game (create empty players list)
+  //TODO: Delete cardgame file
+
 
 
   render() {
@@ -41,21 +84,18 @@ export default class Kortspilloversikt extends React.Component {
         <CustomHeader title={"Kortspill"} icon={"ios-arrow-back"} navigation={this.props.navigation} />
 
           <View style={styles.content}>
-            <Text>Kortspilloversikt</Text>
-            <ImageBackground style={styles.img} source={require('../../images/kortspill.jpg')}>
-              <TouchableHighlight style={styles.largeLink} onPress={ () => this.showCardGame(true) }>
-                <View style={styles.textBar}>
-                  <Text style={{ color: '#fff' }}>Kortspill</Text>
-                </View>
-              </TouchableHighlight>
-            </ImageBackground>
+            <TouchableHighlight style={styles.largeLink} onPress={ () => this.retrieveData() }>
+              <View style={styles.textBar}>
+                <Text style={{ color: '#000' }}>Kortspill 1</Text>
+              </View>
+            </TouchableHighlight>
           </View>
         </View>
       );
     }else{
-      //Render the seelected card game instead of the cardgame view. 
+      //Render the seelected card game instead of the cardgame view.
       return (
-        <Kortspill showCardGame={this.showCardGame} />
+        <Kortspill showCardGame={this.showCardGame} playerdata={this.state.players} />
       );
     }
   }

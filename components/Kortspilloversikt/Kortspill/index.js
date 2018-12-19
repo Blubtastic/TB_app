@@ -20,7 +20,7 @@ export default class Kortspill extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      players: [],
+      players: [], 
       selectedPlayer: {key: '', name: '', scores: [], sum: 0, nextScore: null},
       modalVisible: false,
       playerModalVisible: false,
@@ -33,15 +33,9 @@ export default class Kortspill extends React.Component {
 
 
   componentWillMount() {
-    //For testing. Later will set state from local storage.
-    this.setState({
-      players:
-        [
-          { key: '0', name: 'Joakim', scores: [5, 10, 5, 20], sum: 0, nextScore: null },
-          { key: '1', name: 'Martin', scores: [3, 8], sum: 0, nextScore: null },
-          { key: '2', name: 'Sølve', scores: [0, 12], sum: 0, nextScore: null },
-        ],
-    }, () => this.rerenderPlayers())
+    //copy playerinfo from parent, which got it from localstorage
+    this.setState({ players: this.props.playerdata },
+      () => this.rerenderPlayers())
   }
 
   //Restructures the list of players in state.
