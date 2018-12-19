@@ -123,15 +123,11 @@ export default class Kortspill extends React.Component {
     this.toggleModalPlayer(true);
   }
 
-  //TODO: Use keys to delete correct item when duplicate scores are present.
-  deleteScore(score){
+  deleteScore(score, index){
     let playerIndex = this.state.players.indexOf(this.state.selectedPlayer);
-    let scoreIndex = this.state.selectedPlayer.scores.indexOf(score);
     let tempArray = this.state.players;
-    tempArray[playerIndex].scores.splice(scoreIndex, 1);
+    tempArray[playerIndex].scores.splice(index, 1);
     this.setState({players: tempArray});
-
-    console.log("index: " + scoreIndex);
   }
   //Deletes "selectedPlayer" from the players list.
   deletePlayer(){
@@ -214,10 +210,11 @@ export default class Kortspill extends React.Component {
             <FlatList
               data={this.state.selectedPlayer.scores}
               extraData={this.state}
-              renderItem={({ item }) =>
+              keyExtractor={(_score, index) => `${this.state.selectedPlayer.key}-score-${index}`}
+              renderItem={({ item, index }) =>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={{ flex: 1 }}> {item} </Text>
-                  <DeleteButton action={() => this.deleteScore(item)} />
+                  <DeleteButton action={() => this.deleteScore(item, index)} />
                 </View>
               }
             />
