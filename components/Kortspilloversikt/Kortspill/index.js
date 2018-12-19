@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput } from 'react-native';
 import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
 
-import CustomHeader from '../SmallComponents/CustomHeader';
-import CloseButton from '../SmallComponents/CloseButton';
-import DeleteButton from '../SmallComponents/DeleteButton';
-import CustomModal from '../SmallComponents/CustomModal';
+import CustomHeader from '../../SmallComponents/CustomHeader';
+import CloseButton from '../../SmallComponents/CloseButton';
+import DeleteButton from '../../SmallComponents/DeleteButton';
+import CustomModal from '../../SmallComponents/CustomModal';
 
 /*
 KORTSPILL COMPONENT: ----------------------------------------------------------
@@ -30,12 +30,7 @@ export default class Kortspill extends React.Component {
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleModalPlayer = this.toggleModalPlayer.bind(this);
   }
-  static navigationOptions = {
-    drawerLabel: 'Kortspill',
-    drawerIcon: (
-      <Image source={require('../../images/kortspill.png')} style={{ width: 24, height: 24 }} />
-    ),
-  };
+
 
   componentWillMount() {
     //For testing. Later will set state from local storage.
@@ -119,7 +114,6 @@ export default class Kortspill extends React.Component {
   }
   selectPlayer(player){
     this.setState({selectedPlayer: player});
-    console.log("player: " + player.name);
     this.toggleModalPlayer(true);
   }
 
@@ -147,7 +141,7 @@ export default class Kortspill extends React.Component {
         {/* HEADER/NAV ---------------------------------------------------- */}
         <View style={styles.header}>
           <H1>Poengtavle</H1>
-          <CloseButton action={() => this.props.navigation.goBack(null)} />
+          <CloseButton action={() => this.props.showCardGame(false)} />
         </View>
 
 
@@ -205,7 +199,6 @@ export default class Kortspill extends React.Component {
           </CustomModal>
 
           {/* Modal for deleting players/scores */}
-          {/* TODO: generate keys */}
           <CustomModal modalVisible={this.state.playerModalVisible} toggleModal={this.toggleModalPlayer} title={this.state.selectedPlayer.name}>
             <FlatList
               data={this.state.selectedPlayer.scores}

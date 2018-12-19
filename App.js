@@ -11,7 +11,7 @@ import CalendarScreen from './components/Calendar';
 import VaskelisterScreen from './components/Vaskelister';
 import KlesvaskScreen from './components/Klesvask';
 import TurneringerScreen from './components/Turneringer';
-import KortspillScreen from './components/Kortspill';
+import KortspillScreen from './components/Kortspilloversikt';
 
 import DoorOpenerScreen from './components/DoorOpener';
 
