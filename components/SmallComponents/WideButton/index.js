@@ -5,6 +5,7 @@ import { H1, Button } from 'native-base';
 /*
 CLOSEBUTTON COMPONENT: --------------------------------------------------------
 Close button that executes the function that is passed as props.
+More graphical details than the deletebutton. 
 
 PROPERTIES:
 - action: is executed when button is clicked.

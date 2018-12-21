@@ -5,7 +5,7 @@ import { H1, Button, Icon } from 'native-base';
 /*
 CLOSEBUTTON COMPONENT: --------------------------------------------------------
 Delete button. Just like CloseButton, but with different style. (i know, it's dumb)
-
+Less detailed than the closebutton
 PROPERTIES:
 - action: is executed when button is clicked.
 */

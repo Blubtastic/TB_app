@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput } from 'react-native';
-import { Content, Icon, H1, H2, H3, Item } from 'native-base';
+import { StyleSheet, Text, View, FlatList, TouchableHighlight, TextInput } from 'react-native';
+import { H1, H3 } from 'native-base';
 
 import CustomHeader from '../../SmallComponents/CustomHeader';
+import CustomModal from '../../SmallComponents/CustomModal';
 import CloseButton from '../../SmallComponents/CloseButton';
 import DeleteButton from '../../SmallComponents/DeleteButton';
-import CustomModal from '../../SmallComponents/CustomModal';
 import WideButton from '../../SmallComponents/WideButton';
 
 /*
@@ -28,21 +28,18 @@ export default class Kortspill extends React.Component {
       inputs: {},
       newName: null,
     }
+    //Functions that are passed to child without parameters
     this.toggleModal = this.toggleModal.bind(this);
     this.toggleModalPlayer = this.toggleModalPlayer.bind(this);
   }
-
-
   componentWillMount() {
     //copy playerinfo from parent, which got it from localstorage
     this.setState({ players: this.props.playerdata },
       () => this.rerenderPlayers())
   }
 
-  //Restructures the list of players in state.
-  //Run this whenever content of players changes ------------------------------
+  //Restructures the list of players in state. Run when players change
   rerenderPlayers() {
-    //Copy state and calculate scores
     var players = this.state.players;
     for (i = 0; i < players.length; i++) {
       var totalScore = 0;
@@ -61,10 +58,8 @@ export default class Kortspill extends React.Component {
     this.setState({ players: players });
   }
 
-  //Add new score to each player ---------------------------------------------
   addScores(players) {
     this.toggleModal(false);
-    // Copy array & update with new values
     let newArray = this.state.players;
     for (x = 0; x < newArray.length; x++) {
       if (newArray[x].nextScore != null) {
@@ -74,7 +69,6 @@ export default class Kortspill extends React.Component {
     }
     this.setState({ players: newArray });
     this.rerenderPlayers();
-
     this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
   }
 
@@ -90,50 +84,46 @@ export default class Kortspill extends React.Component {
       newPlayer.nextScore = null;
 
       newPlayers.push(newPlayer);
-      this.setState({ players: newPlayers });
       this.setState({ players: newPlayers }, () => { this.rerenderPlayers() })
       this.rerenderPlayers(); //Player state changes, must rebuild.
-
-      this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
+      this.props.saveGames(this.props.gameTitle, this.state.players); //save to localstorage
     }
   }
-
-  //Jumps to next input field ------------------------------------------------
-  focusNextField(id) {
-    if (id < this.state.players.length) {
-      this.state.inputs[id].focus();
-    }
-  }
-
-  toggleModal(show){ //--------------------------------------------------------
-    this.setState({ modalVisible: show });
-  }
-  toggleModalPlayer(show){ //---------------------------------------------------
-    this.setState({ playerModalVisible: show });
-  }
-  selectPlayer(player){
-    this.setState({selectedPlayer: player});
-    this.toggleModalPlayer(true);
-  }
-
+  //Delete stuff
   deleteScore(index){
     let playerIndex = this.state.players.indexOf(this.state.selectedPlayer);
     let tempArray = this.state.players;
     tempArray[playerIndex].scores.splice(index, 1);
     this.setState({players: tempArray});
-
     this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
     this.rerenderPlayers();
   }
-
   deletePlayer(){ //Deletes "selectedPlayer" from the players list.
     let index = this.state.players.indexOf(this.state.selectedPlayer);
     let tempArray = this.state.players;
     tempArray.splice(index, 1);
     this.setState({players: tempArray});
     this.toggleModalPlayer(false);
-
     this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
+  }
+
+  //Jumps to next input field
+  focusNextField(id) {
+    if (id < this.state.players.length) {
+      this.state.inputs[id].focus();
+    }
+  }
+
+  //State changers
+  toggleModal(show){
+    this.setState({ modalVisible: show });
+  }
+  toggleModalPlayer(show){ this.setState({
+    playerModalVisible: show });
+  }
+  selectPlayer(player){
+    this.setState({selectedPlayer: player});
+    this.toggleModalPlayer(true);
   }
 
   renderPointButton() { //Only render points button if there are players.
@@ -147,19 +137,16 @@ export default class Kortspill extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {/* HEADER/NAV ---------------------------------------------------- */}
         <View style={styles.header}>
           <H1>{this.props.gameTitle}</H1>
           <CloseButton action={() => this.props.showCardGame(false)} />
         </View>
 
-
-        {/* CONTENT ------------------------------------------------------- */}
         <View style={styles.content}>
-
-          {/* Ny spiller input field+btn  */}
+          {/* New player */}
           <TextInput
             style={{ height: 60, alignSelf: 'stretch',}}
+            autoFocus={true}
             placeholder="Legg til ny spiller"
             ref={input => { this.textInput = input }}
             blurOnSubmit={true}
@@ -170,9 +157,7 @@ export default class Kortspill extends React.Component {
               this.textInput.clear();
             }}
           />
-
-
-          {/* Modal for adding scores */}
+          {/* Add playerscores */}
           <CustomModal modalVisible={this.state.modalVisible} toggleModal={this.toggleModal} title={"Legg til poeng"}>
             <FlatList
               data={this.state.players}
@@ -201,7 +186,7 @@ export default class Kortspill extends React.Component {
             <WideButton title={"Legg til"} action={() => this.addScores()} />
           </CustomModal>
 
-          {/* Modal for deleting players/scores */}
+          {/* Delete players/scores */}
           <CustomModal modalVisible={this.state.playerModalVisible} toggleModal={this.toggleModalPlayer} title={this.state.selectedPlayer.name}>
             <FlatList
               data={this.state.selectedPlayer.scores}
@@ -217,11 +202,10 @@ export default class Kortspill extends React.Component {
             <WideButton title={"Slett spiller"} action={() => this.deletePlayer()} />
           </CustomModal>
 
-
-          {/* SHOW LIST OF PLAYERS w/scores ----------*/}
+          {/* Generate players/scores */}
           <View style={{ alignSelf: 'stretch', flex: 1, justifyContent: 'space-between' }}>
             <View style={{ maxHeight: '100%' }}>
-              {/* A list containing a list, showing each player and their scores. */}
+              {/* A player list containing a scores list*/}
               <FlatList
                 data={this.state.players}
                 extraData={this.state}
@@ -240,7 +224,9 @@ export default class Kortspill extends React.Component {
                         horizontal={true}
                         keyExtractor={(_score, index) => `${item.key}-score-${index}`}
                         renderItem={({ item }) =>
+
                           <Text style={{ paddingLeft: 6, paddingRight: 6 }}>{item}</Text>
+
                         }
                       />
                     </View>
@@ -251,7 +237,6 @@ export default class Kortspill extends React.Component {
               {this.renderPointButton()}
             </View>
           </View>
-
         </View>
       </View>
     );
@@ -260,18 +245,6 @@ export default class Kortspill extends React.Component {
 
 //STYLES
 const styles = StyleSheet.create({
-  closeBtn: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#F9A423',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 14,
-    right: 14,
-  },
   header: {
     display: 'flex',
     flexDirection: 'row',
@@ -287,21 +260,5 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flex: 1,
-  },
-  modalBackground: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    alignItems: 'center',
-    paddingTop: 50,
-    justifyContent: 'flex-start',
-    flex: 1,
-    position: 'relative',
-    zIndex: 1,
-  },
-  modalContent: {
-    width: '90%',
-    backgroundColor: '#fff',
-    padding: 25,
-    position: 'relative',
-    zIndex: 2,
   },
 });
