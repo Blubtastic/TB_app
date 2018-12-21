@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableHighlight, TextInput } from 'react-native';
-import { H1, H3 } from 'native-base';
+import { H1, H2, H3 } from 'native-base';
 
 import CustomHeader from '../../SmallComponents/CustomHeader';
 import CustomModal from '../../SmallComponents/CustomModal';
@@ -213,8 +213,8 @@ export default class Kortspill extends React.Component {
                 renderItem={({ item }) =>
 
                   <TouchableHighlight onPress={ () => this.selectPlayer(item) } >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10, paddingBottom: 10, paddingLeft: 10 }}>
-                      <View style={{ marginRight: 10, width: 80 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+                      <View style={{ marginRight: 10, width: '30%', borderRightWidth: 0.5, borderColor: '#d6d7da', }}>
                         <H3>{item.name}</H3>
                         <Text style={{ color: '#F9A423' }}>{item.sum + ' poeng'}</Text>
                       </View>

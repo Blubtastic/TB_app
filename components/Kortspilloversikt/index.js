@@ -1,6 +1,6 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Image, TextInput, TouchableHighlight, FlatList} from 'react-native';
-import { H1, Button } from 'native-base';
+import { H1, H2, H3, Button } from 'native-base';
 
 import CustomHeader from '../SmallComponents/CustomHeader';
 import CustomModal from '../SmallComponents/CustomModal';
@@ -171,8 +171,8 @@ export default class Kortspilloversikt extends React.Component {
                 keyExtractor={(_score, index) => `${this.state.cardGames.key}-score-${index}`}
                 renderItem={({ item, index }) =>
                   <TouchableHighlight style={styles.largeLink} onPress={ () => this.setPlayers(item) }>
-                    <View style={{flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: 20, backgroundColor: this.randomColor()}}>
-                      <H1 style={{ color: '#000' }}>{item.title}</H1>
+                    <View style={{flexDirection: 'row', alignSelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: 20}}>
+                      <H3 style={{ color: '#000' }}>{item.title}</H3>
                       <DeleteButton action={() => {this.toggleDeletemodal(true), this.setState({deleteIndex: index, gameTitle: this.state.cardGames[index].title }) } } />
                     </View>
                   </TouchableHighlight>
@@ -205,7 +205,8 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'flex-end',
     alignItems: 'center',
-
+    borderWidth: 0.5,
+    borderColor: '#d6d7da',
   },
   button: {
     height: 60,
