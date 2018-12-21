@@ -1,11 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, FlatList, TouchableHighlight, TouchableWithoutFeedback, Modal, TextInput } from 'react-native';
-import { Content, Icon, H1, H2, H3, Item, Button } from 'native-base';
+import { Content, Icon, H1, H2, H3, Item } from 'native-base';
 
 import CustomHeader from '../../SmallComponents/CustomHeader';
 import CloseButton from '../../SmallComponents/CloseButton';
 import DeleteButton from '../../SmallComponents/DeleteButton';
 import CustomModal from '../../SmallComponents/CustomModal';
+import WideButton from '../../SmallComponents/WideButton';
 
 /*
 KORTSPILL COMPONENT: ----------------------------------------------------------
@@ -115,16 +116,17 @@ export default class Kortspill extends React.Component {
     this.toggleModalPlayer(true);
   }
 
-  deleteScore(score, index){
+  deleteScore(index){
     let playerIndex = this.state.players.indexOf(this.state.selectedPlayer);
     let tempArray = this.state.players;
     tempArray[playerIndex].scores.splice(index, 1);
     this.setState({players: tempArray});
 
     this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
+    this.rerenderPlayers();
   }
-  //Deletes "selectedPlayer" from the players list.
-  deletePlayer(){
+
+  deletePlayer(){ //Deletes "selectedPlayer" from the players list.
     let index = this.state.players.indexOf(this.state.selectedPlayer);
     let tempArray = this.state.players;
     tempArray.splice(index, 1);
@@ -134,7 +136,13 @@ export default class Kortspill extends React.Component {
     this.props.saveGames(this.props.gameTitle, this.state.players); //save changes
   }
 
-
+  renderPointButton() { //Only render points button if there are players.
+    if (this.state.players.length > 0){
+      return <WideButton title={"Legg til poeng"} action={() => this.toggleModal(true)} />;
+    }else{
+      return null;
+    }
+  }
 
   render() {
     return (
@@ -162,11 +170,7 @@ export default class Kortspill extends React.Component {
               this.textInput.clear();
             }}
           />
-          {/*
-          <Button full onPress={() => this.addPlayer(this.state.newName)} style={{ backgroundColor: '#F9A423', height: 60 }}>
-            <H3 >Ny spiller</H3>
-          </Button>
-          */}
+
 
           {/* Modal for adding scores */}
           <CustomModal modalVisible={this.state.modalVisible} toggleModal={this.toggleModal} title={"Legg til poeng"}>
@@ -194,9 +198,7 @@ export default class Kortspill extends React.Component {
                 </View>
               }
             />
-            <Button full style={{ backgroundColor: '#F9A423', height: 60, marginTop: 20 }} onPress={() => this.addScores()}>
-              <Text>Legg til</Text>
-            </Button>
+            <WideButton title={"Legg til"} action={() => this.addScores()} />
           </CustomModal>
 
           {/* Modal for deleting players/scores */}
@@ -208,13 +210,11 @@ export default class Kortspill extends React.Component {
               renderItem={({ item, index }) =>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={{ flex: 1 }}> {item} </Text>
-                  <DeleteButton action={() => this.deleteScore(item, index)} />
+                  <DeleteButton action={() => this.deleteScore(index)} />
                 </View>
               }
             />
-            <Button full onPress={() => this.deletePlayer()} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
-              <H3 style={{ fontSize: 20, justifyContent: 'center' }}>Slett spiller</H3>
-            </Button>
+            <WideButton title={"Slett spiller"} action={() => this.deletePlayer()} />
           </CustomModal>
 
 
@@ -248,10 +248,7 @@ export default class Kortspill extends React.Component {
 
                 }
               />
-              {/* "Legg til poeng"-knapp  */}
-              <Button full onPress={() => this.setState({ modalVisible: true })} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
-                <H1 style={{ fontSize: 20, justifyContent: 'center' }}>Legg til poeng</H1>
-              </Button>
+              {this.renderPointButton()}
             </View>
           </View>
 

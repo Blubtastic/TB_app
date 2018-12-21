@@ -1,18 +1,20 @@
 import React from 'react';
 import { AsyncStorage, StyleSheet, Text, View, Image, TextInput, TouchableHighlight, ImageBackground, FlatList} from 'react-native';
-import { Content, Button, H1 } from 'native-base';
+import { Content, H1 } from 'native-base';
 
 import CustomHeader from '../SmallComponents/CustomHeader';
 import CustomModal from '../SmallComponents/CustomModal';
 import DeleteButton from '../SmallComponents/DeleteButton';
+import WideButton from '../SmallComponents/WideButton';
 
 import Kortspill from './Kortspill';
 
 
 /*
 KLESVASK COMPONENT: ----------------------------------------------------------
-Here you can see how many washing machines that are available, the remaining time for each machine and other stuff.
+Menu page for the cardgame component. Create, delete and edit existing card games.
 PROPERTIES:
+- Navigation.
 */
 
 export default class Kortspilloversikt extends React.Component {
@@ -20,7 +22,7 @@ export default class Kortspilloversikt extends React.Component {
     super(props);
     this.state = {
       showCardGame: false,
-      gameTitle: 'Ligretto',
+      gameTitle: '',
       cardGames: [], //List with all list of players. This is saved in localstorage.
       players: [], //The currently selected list of players.
       modalVisible: false,
@@ -41,14 +43,7 @@ export default class Kortspilloversikt extends React.Component {
 
   componentWillMount() {
     //Dummy content for testing
-    this.setState({
-      players:
-        [
-          { key: '0', name: 'Joakim', scores: [5, 10, 5, 20], sum: 40, nextScore: null },
-          { key: '1', name: 'Martin', scores: [3, 8], sum: 11, nextScore: null },
-          { key: '2', name: 'Sølve', scores: [0, 12], sum: 12, nextScore: null },
-        ],
-    }, () => this.retrieveData()); //get data from localstorage and update state which then generates list.
+    this.retrieveData(); //get data from localstorage and update state which then generates list.
   }
 
   //TODO: check if title doesn't already exist.
@@ -96,21 +91,26 @@ export default class Kortspilloversikt extends React.Component {
   }
 
   showCardGame(show){
-    this.setState({ showCardGame: show })
+    this.setState({ showCardGame: show, modalVisible: false })
   }
 
   newGame(){
-    this.setState({players: []});
-    this.saveGames(this.state.gameTitle, this.state.players);
-    this.showCardGame(true);
+    if(this.state.gameTitle != '') {
+      this.setState({players: []});
+      this.saveGames(this.state.gameTitle, this.state.players);
+      this.showCardGame(true);
+    }
   }
 
   setPlayers(saveData){
-    this.setState({ players: saveData.data }, () => this.showCardGame(true));
+    this.setState({ players: saveData.data, gameTitle: saveData.title }, () => this.showCardGame(true));
   }
 
   toggleModal(show){ //--------------------------------------------------------
     this.setState({ modalVisible: show });
+    if(show){
+      this.setState({ gameTitle: '' });
+    }
   }
 
   deleteGame(index){
@@ -120,16 +120,8 @@ export default class Kortspilloversikt extends React.Component {
   }
 
 
-  //TODO: LOAD/SAVE playerdata from localstorage
-  //TODO: Generate list from save files
-
-  //TODO Function for new card game (create empty players list)
-  //TODO: Delete cardgame file
-
-
-
   render() {
-    //TODO: IF-ELSE statement. Render "kortspill" component if one is selected with the right parameters. If not, render selection screen.
+
     if(!this.state.showCardGame){
       return (
         <View style={{flex: 1}}>
@@ -146,14 +138,12 @@ export default class Kortspilloversikt extends React.Component {
                 keyboardType={'default'}
                 onChangeText={ (text) => this.setState({ gameTitle: text }) }
                 onSubmitEditing={() => {
-                  this.setState({ gameTitle: text });
+                  this.newGame();
                   this.toggleModal(false);
                   this.textInput.clear();
                 }}
               />
-              <Button full onPress={() => this.newGame()} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
-                <H1 style={{ fontSize: 20, justifyContent: 'center' }}>Nytt kortspill</H1>
-              </Button>
+              <WideButton title={"Nytt kortspill"} action={() => this.newGame()} />
             </CustomModal>
 
 
@@ -174,9 +164,9 @@ export default class Kortspilloversikt extends React.Component {
               }
             />
 
-            <Button full onPress={() => this.toggleModal(true)} style={{ alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center', height: 60, backgroundColor: '#F9A423' }}>
-              <H1 style={{ fontSize: 20, justifyContent: 'center' }}>Nytt kortspill</H1>
-            </Button>
+
+            <WideButton title={"Nytt kortspill"} action={() => this.toggleModal(true)} />
+
           </View>
         </View>
       );
